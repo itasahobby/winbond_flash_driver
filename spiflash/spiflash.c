@@ -17,31 +17,31 @@
 
 /* Winbound W25Q512JV instruction set */
 
-#define SPIF_INST_READ_RESPONSE					0x69
+#define SPIF_INST_READ_RESPONSE				0x69
 #define SPIF_INST_READ_STATUS					0x05
-#define SPIF_INST_ENABLE_WRITE					0x06
+#define SPIF_INST_ENABLE_WRITE				0x06
 #define SPIF_INST_4B_WRITE						0x12
-#define SPIF_INST_4B_READ						0x13
-#define SPIF_INST_4B_ERASE_SECT					0x21
-#define SPIF_INST_ERASE_32BLOCK					0x52
-#define SPIF_INST_ERASE							0xC7
+#define SPIF_INST_4B_READ							0x13
+#define SPIF_INST_4B_ERASE_SECT				0x21
+#define SPIF_INST_ERASE_32BLOCK				0x52
+#define SPIF_INST_ERASE								0xC7
 
 
 /* Winbound W25Q512JV status register */
-#define SPIF_STAT_BUSY							0x01
-#define SPIF_STAT_WRITE_ENABLE					0x02
+#define SPIF_STAT_BUSY								0x01
+#define SPIF_STAT_WRITE_ENABLE				0x02
 
 /*
 ** Winbound specs
 ** SPIF_SIZE is 67108864, last sector is used temporally on writing operations.
 */
-#define SPIF_PAGE_SIZE							256
-#define SPIF_SECTOR_SIZE						4096
-#define SPIF_VIRT_SIZE							67104768
-#define SPIF_SIZE								67108864
+#define SPIF_PAGE_SIZE								256
+#define SPIF_SECTOR_SIZE							4096
+#define SPIF_VIRT_SIZE								67104768
+#define SPIF_SIZE											67108864
 
 /************************************************************************/
-/*                          AUXILIAR FUNCTIONS                          */
+/*                         AUXILIARY FUNCTIONS                          */
 /************************************************************************/
 
 /* Initializes ATMEGA32u4 SPI */
@@ -118,6 +118,11 @@ void SPIF_enable_write()
 	return;
 }
 
+/*
+** Auxiliary function to read data from flash and write into the given buffer.
+** It has all memory address space available, including the last sector used 
+** as temporary storage.
+*/
 SPIF_RET_t SPIF_uncheck_read(uint32_t address, uint8_t* buff, uint32_t size)
 {
 
@@ -146,7 +151,8 @@ SPIF_RET_t SPIF_uncheck_read(uint32_t address, uint8_t* buff, uint32_t size)
 }
 
 /*
-** Fast write with all physical addresses available
+** Auxiliary function to write given buffer to flash. It has all memory address
+** space available, including the last sector used as temporary storage.
 */
 SPIF_RET_t SPIF_uncheck_write(uint32_t address, uint8_t* buff, uint32_t size)
 {
@@ -257,7 +263,7 @@ SPIF_RET_t SPIF_uncheck_write(uint32_t address, uint8_t* buff, uint32_t size)
 /*                          EXPORTED FUNCTIONS                          */
 /************************************************************************/
 
-/* Fill the whole flash with 0xFF, it may take some time (~2min) */
+/* Fill the whole flash with 0xFF, it may take some time. */
 void SPIF_erase(void)
 {
 	while ((SPIF_read_status() & SPIF_STAT_BUSY)) {}
@@ -274,6 +280,7 @@ void SPIF_erase(void)
 	return;
 }
 
+/* Fill the given sector with 0xFF, */
 void SPIF_4B_erase_sector(uint32_t address)
 {
 	while (SPIF_read_status() & SPIF_STAT_BUSY) {}
@@ -296,7 +303,7 @@ void SPIF_4B_erase_sector(uint32_t address)
 	return;
 }
 
-/* Return page size in bytes */
+/* Return page size in bytes. */
 uint16_t SPIF_get_page_size(void)
 {
 	return SPIF_PAGE_SIZE;
@@ -314,7 +321,7 @@ uint32_t SPIF_get_size(void)
 	return SPIF_VIRT_SIZE;
 }
 
-/* Read from flash to buffer the given size */
+/* Read from flash to buffer up to last sector*/
 SPIF_RET_t SPIF_read(uint32_t address, uint8_t* buff, uint32_t size)
 {
 
@@ -327,7 +334,7 @@ SPIF_RET_t SPIF_read(uint32_t address, uint8_t* buff, uint32_t size)
 /*
 ** Attempts to write data, if any involved page has no compatible data (writing
 ** 1's where there is a 0's) then returns SPIF_ERR_INCOMPATIBLE_WRITE. Any previous
-** pages that were compatible are overwritten before ending
+** pages that were compatible are writen.
 */
 SPIF_RET_t SPIF_write(uint32_t address, uint8_t* buff, uint32_t size)
 {
