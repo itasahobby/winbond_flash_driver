@@ -118,28 +118,6 @@ void SPIF_enable_write()
 	return;
 }
 
-void SPIF_4B_erase_sector(uint32_t address)
-{
-	while (SPIF_read_status() & SPIF_STAT_BUSY) {}
-
-	SPIF_enable_write();
-
-	SPIF_CS_disable();
-	SPIF_CS_enable();
-
-	SPIF_send_inst(SPIF_INST_4B_ERASE_SECT);
-
-	SPIF_send_inst(address >> 24);
-	SPIF_send_inst(address >> 16);
-	SPIF_send_inst(address >> 8);
-	SPIF_send_inst(address);
-
-
-	SPIF_CS_disable();
-
-	return;
-}
-
 SPIF_RET_t SPIF_uncheck_read(uint32_t address, uint8_t* buff, uint32_t size)
 {
 
@@ -290,6 +268,28 @@ void SPIF_erase(void)
 	SPIF_CS_enable();
 
 	SPIF_send_inst(SPIF_INST_ERASE);
+
+	SPIF_CS_disable();
+
+	return;
+}
+
+void SPIF_4B_erase_sector(uint32_t address)
+{
+	while (SPIF_read_status() & SPIF_STAT_BUSY) {}
+
+	SPIF_enable_write();
+
+	SPIF_CS_disable();
+	SPIF_CS_enable();
+
+	SPIF_send_inst(SPIF_INST_4B_ERASE_SECT);
+
+	SPIF_send_inst(address >> 24);
+	SPIF_send_inst(address >> 16);
+	SPIF_send_inst(address >> 8);
+	SPIF_send_inst(address);
+
 
 	SPIF_CS_disable();
 
