@@ -6,16 +6,7 @@
 
 #define F_CPU 16000000UL
 
-#include <avr/eeprom.h>
 #include <avr/io.h>
-#include <avr/wdt.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <util/delay.h>
 #include "spiflash.h"
 
 /* ATMEGA32u4 Port B SPI Pins */
@@ -26,7 +17,7 @@
 
 /* Winbound W25Q512JV instruction set */
 
-#define SPIF_INST_READ_RESPONSE					0x00
+#define SPIF_INST_READ_RESPONSE					0x69
 #define SPIF_INST_READ_STATUS					0x05
 #define SPIF_INST_ENABLE_WRITE					0x06
 #define SPIF_INST_4B_WRITE						0x12
