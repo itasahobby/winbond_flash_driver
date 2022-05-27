@@ -20,7 +20,7 @@ Last sector is used to write already existing data to it, mixing it with new one
 
 #### Compatible writes
 
-In order to speed up writing instructions, temporal sector is only used when necessary. In order to achieve so we first need to understand when a sector erase is a must.
+In order to speed up writing instructions, temporal sector is only used when necessary. To achieve so we first need to understand when a sector erase is a must.
 
 | Buffer | Flash | Compatible |
 |--------|-------|------------|
